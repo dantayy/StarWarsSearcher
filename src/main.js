@@ -8,22 +8,24 @@ const app = new Vue({
         copyrightName: "Nicholas Mercadante",
         resourceType: "",
         searchTerm: "",
-        responseStr: ""
+        responseStr: "",
+        vidSrc = ""
 	},
 	methods:{
         search(){
             //if (! this.term.trim()) return;
-            let searchStr = `https://swapi.co/api/`;
+            let swSearchStr = `https://swapi.co/api/`;
+            let ytSearchStr = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&key=[YOUR_API_KEY]`;
             if(this.resourceType == ""){ this.responseStr = "Please specify a category for your search term!"}
             else{
-                searchStr += this.resourceType + "/";
+                swSearchStr += this.resourceType + "/";
                 if(this.searchTerm != ""){
-                    searchStr += "?search=" + this.searchTerm;
+                    swSearchStr += "?search=" + this.searchTerm;
                 }
                 else{
-                    searchStr += (Math.round(Math.random() * 10) + 1) + "/";
+                    swSearchStr += (Math.round(Math.random() * 10) + 1) + "/";
                 }
-                fetch(searchStr)
+                fetch(swSearchStr)
                 .then(response => {
                     if(!response.ok){
                         this.responseStr = "An error occured!";
