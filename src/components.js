@@ -4,8 +4,7 @@ Vue.component('joke-footer-2',{
 		   &copy; {{ year }} {{ name }}
 		   </footer>`
 });
-Vue.component('joke-display',{
-	props: ['question','answer'],
-	template: `<p>{{question}}</p>
-                <p>{{answer}}</p>`
+Vue.component('result-display',{
+	props: ['response'],
+	template: `<p>{{response}}</p>`
 });
