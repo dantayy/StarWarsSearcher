@@ -6,5 +6,13 @@ Vue.component('joke-footer-2',{
 });
 Vue.component('result-display',{
 	props: ['response'],
-	template: `<p>{{response}}</p>`
+	template: `<ul>
+        <li v-for="item in response">
+            {{ item }}
+        </li>
+    </ul>`
+});
+Vue.component('result-video',{
+    props: ['url'],
+    template: `<iframe width="640" height="480" v-bind:src="url"></iframe>`
 });
