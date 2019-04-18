@@ -14,5 +14,5 @@ Vue.component('result-display',{
 });
 Vue.component('result-video',{
     props: ['url'],
-    template: `<iframe width="640" height="480" v-bind:src="url"></iframe>`
+    template: `<iframe width="560" height="315" v-bind:src="url" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`
 });

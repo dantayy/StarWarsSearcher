@@ -7,13 +7,12 @@ const app = new Vue({
         resourceType: "",
         searchTerm: "",
         returnedInfo: [],
-        vidSrc: "https://youtu.be/adzYW5DZoWs"
+        vidSrc: "https://www.youtube.com/embed/adzYW5DZoWs"
 	},
 	methods:{
         search(){
             this.returnedInfo = [];
             let swSearchStr = `https://swapi.co/api/`;
-            let ytSearchStr = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&key=` + ytKey;
             if(this.resourceType == ""){ this.returnedInfo.push("Please specify a category for your search!"); }
             else{
                 swSearchStr += this.resourceType + "/";
@@ -39,6 +38,20 @@ const app = new Vue({
                         for (let key in objectToLoop) {
                             if(propertyCounter > 5){ break; }
                             this.returnedInfo.push(key + ": " + objectToLoop[key]);
+                            if(key == "title" || key == "name"){
+                                let ytSearchStr = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=Star%20Wars%20${objectToLoop[key]}&key=${ytKey}`;
+                                fetch(ytSearchStr)
+                                .then(ytResponse => {
+                                    if(!ytResponse.ok){
+                                        this.returnedInfo.push("An error occured!");
+                                        throw Error(`ERROR: ${ytResponse.statusText}`);
+                                    }
+                                    return ytResponse.json();
+                                })
+                                .then(ytJson => {
+                                    this.vidSrc = `https://www.youtube.com/embed/${ytJson.items[0].id.videoId}`;
+                                })
+                            }
                             propertyCounter++;
                         }   
                     }
