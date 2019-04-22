@@ -64,12 +64,25 @@
             </div> <!-- end container -->	
             <joke-footer-2 v-bind:year="copyrightYear" v-bind:name="copyrightName"></joke-footer-2>
         </div> <!-- end #app -->
-
+        
+        <script src="src/config.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
+        <script>
+          // Initialize Firebase
+          var config = {
+            apiKey: firebaseKey,
+            authDomain: "starwarssearcherrecords.firebaseapp.com",
+            databaseURL: "https://starwarssearcherrecords.firebaseio.com",
+            projectId: "starwarssearcherrecords",
+            storageBucket: "starwarssearcherrecords.appspot.com",
+            messagingSenderId: firebaseMsgSenderID
+          };
+          firebase.initializeApp(config);
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/@babel/polyfill@latest/dist/polyfill.min.js"></script>
         <script src="https://unpkg.com/vue@latest/dist/vue.min.js"></script>
         <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-        <script src="src/config.js"></script>
         <script src="src/components.js"></script>
         <script src="src/main.js"></script>
     </body>

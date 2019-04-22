@@ -24,6 +24,13 @@ const app = new Vue({
                 if(this.searchTerm != ""){
                     swSearchStr += "?search=" + this.searchTerm;
                 }
+                //push search data to firebase
+                let d = new Date();
+                let path = `days/${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+                firebase.database().ref(path).push({
+                    type: this.resourceType,
+                    query: this.searchTerm
+                });
                 //HTTP call with the finished search url
                 fetch(swSearchStr)
                 .then(response => {
