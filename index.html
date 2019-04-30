@@ -13,7 +13,7 @@
         <style>
             /* .myheader grabbed from Bootstrap's jumbotron example - https://getbootstrap.com/docs/4.0/examples/jumbotron/ */
             .myheader{
-                background-color: #e9ecef;
+/*                background-color: #e9ecef;*/
                 padding: 4rem 2rem;
                 margin-bottom:2rem;
             }
@@ -26,17 +26,18 @@
             .search-row{
                 margin-bottom:1rem;
             }
+
         </style>
     </head>
-    <body>
-        <div id="app"><!-- Vue container -->
-            <div class="myheader">
+    <body class="bg-dark text-white">
+        <div id="app" class="container"><!-- Vue container -->
+            <div class="row myheader">
                 <h1 class="display-5">{{title}}</h1>
                 <p class="lead text-muted">Set the category next to the text field, type the name of the character/creature/object you want to look up, and then hit search to get some information on that character! (Entering no text will return a random result from the specified category)</p>
             </div>			
-            <div class="container">
-                <div class="row search-row">
-                    <div class="col-md-12">
+            <div class="row search-row">
+                <div class="col-md-6">
+                    <div class="row">
                         <select v-model="resourceType">
                           <option disabled value="">Please select one</option>
                           <option>films</option>
@@ -46,30 +47,42 @@
                           <option>starships</option>
                           <option>vehicles</option>
                         </select>
-                        <input v-model="searchTerm" placeholder="what's the name of the thing you're looking for?">
+                    </div>
+                    <div class="row">
+                        <input v-model="searchTerm" placeholder="Search Term">
+                    </div>
+                    <div class="row">
+                        <p><input v-model="vidBool" type="checkbox" name="Video Search Checkbox" checked> Search YouTube for a video about your term?</p>
+                    </div>
+                    <div class="row">
                         <button class="btn btn-outline-success" type="submit" @click="search">Search</button>
                     </div>
-                </div> <!-- end row -->
-
-                <div class="row">
-                    <div class="col-md-12">
+                    <div class="row">
+                        <p>Results:</p>
+                    </div>
+                    <div class="row">
                         <result-display v-bind:response="returnedInfo"></result-display>
                     </div>
-                </div> <!-- end row -->
-                <div class="row">
-                    <div class="col-md-12">
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <p>Video Result (defaults to Episode IX teaser!): </p>
+                    </div>
+                    <div class="row">
                         <result-video v-bind:url="vidSrc"></result-video>
                     </div>
-                </div> <!-- end row -->
-            </div> <!-- end container -->	
-            <joke-footer-2 v-bind:year="copyrightYear" v-bind:name="copyrightName"></joke-footer-2>
+                </div>
+            </div> <!-- end row -->
+            <div class="row">
+                <joke-footer-2 v-bind:year="copyrightYear" v-bind:name="copyrightName"></joke-footer-2>
+            </div>
         </div> <!-- end #app -->
         
         <script src="src/config.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
         <script>
           // Initialize Firebase
-          var config = {
+          let config = {
             apiKey: firebaseKey,
             authDomain: "starwarssearcherrecords.firebaseapp.com",
             databaseURL: "https://starwarssearcherrecords.firebaseio.com",

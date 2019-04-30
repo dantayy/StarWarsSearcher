@@ -1,3 +1,12 @@
+//ES6 class for a user's query
+class Query {
+    constructor(category, term, vid){
+        this.category = category;
+        this.term = term;
+        this.vid = vid;
+    }
+}
+
 const app = new Vue({
 	el: '#app',
 	data: {
@@ -6,30 +15,34 @@ const app = new Vue({
         copyrightName: "Nicholas Mercadante",
         resourceType: "", //var for type of thing user specifies to search for in the select element
         searchTerm: "", //var for user's search term
+        vidBool: true, //var for whether or not the YouTube Data API will be pinged for a search
         returnedInfo: [], //var for the info to display
         vidSrc: "https://www.youtube.com/embed/adzYW5DZoWs" //var for youtube url to display in the iframe
 	},
 	methods:{
         search(){
+            //create a new Query object for searching/storing locally
+            let q = new Query(this.resourceType, this.searchTerm, this.vidBool);
+            localStorage.setItem("local-user-query", JSON.stringify(q));
             //reset returned info array
             this.returnedInfo = [];
             //create the base url for the search string
             let swSearchStr = `https://swapi.co/api/`;
             //make sure a resource type has been specified before searching
-            if(this.resourceType == ""){ this.returnedInfo.push("Please specify a category for your search!"); }
+            if(q.category == ""){ this.returnedInfo.push("Please specify a category for your search!"); }
             else{
                 //append reseource type to search string
-                swSearchStr += this.resourceType + "/";
+                swSearchStr += q.category + "/";
                 //use the search functionality of the API if user specifies a search term
-                if(this.searchTerm != ""){
-                    swSearchStr += "?search=" + this.searchTerm;
+                if(q.term != ""){
+                    swSearchStr += "?search=" + q.term;
                 }
                 //push search data to firebase
                 let d = new Date();
                 let path = `days/${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
                 firebase.database().ref(path).push({
-                    type: this.resourceType,
-                    query: this.searchTerm
+                    type: q.category,
+                    query: q.term
                 });
                 //HTTP call with the finished search url
                 fetch(swSearchStr)
@@ -53,30 +66,33 @@ const app = new Vue({
                         //select the first object in the list returned
                         let objectToLoop = json.results[0];
                         //if no specific query was entered, pick a random object to loop through
-                        if(this.searchTerm == ""){ objectToLoop = json.results[Math.round(Math.random() * (json.results.length - 1))];}
+                        if(q.term == ""){ objectToLoop = json.results[Math.round(Math.random() * (json.results.length - 1))];}
                         for (let key in objectToLoop) {
                             //stop adding properties to display after adding six
                             if(propertyCounter > 5){ break; }
                             //push the data to the display list
                             this.returnedInfo.push(key + ": " + objectToLoop[key]);
-                            //if the key is the title or name of the Star Wars object, search YouTube for that value
+                            //if the key is the title or name of the Star Wars object, look into searching on YouTube
                             if(key == "title" || key == "name"){
-                                //var for YouTube data API call
-                                let ytSearchStr = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=Star%20Wars%20${objectToLoop[key]}%20Lore&key=${ytKey}`;
-                                fetch(ytSearchStr)
-                                .then(ytResponse => {
-                                    //handle errors
-                                    if(!ytResponse.ok){
-                                        this.returnedInfo.push("An error occured!");
-                                        throw Error(`ERROR: ${ytResponse.statusText}`);
-                                    }
-                                    return ytResponse.json();
-                                })
-                                //handle returned json
-                                .then(ytJson => {
-                                    //modify the video source var based on what's returned
-                                    this.vidSrc = `https://www.youtube.com/embed/${ytJson.items[0].id.videoId}`;
-                                })
+                                //only make the API call if the user wants the video, otherwise reset the url to the default video
+                                if(q.vid){
+                                    //var for YouTube data API call
+                                    let ytSearchStr = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=Star%20Wars%20${objectToLoop[key]}%20Lore&key=${ytKey}`;
+                                    fetch(ytSearchStr)
+                                    .then(ytResponse => {
+                                        //handle errors
+                                        if(!ytResponse.ok){
+                                            this.returnedInfo.push("An error occured!");
+                                            throw Error(`ERROR: ${ytResponse.statusText}`);
+                                        }
+                                        return ytResponse.json();
+                                    })
+                                    //handle returned json
+                                    .then(ytJson => {
+                                        //modify the video source var based on what's returned
+                                        this.vidSrc = `https://www.youtube.com/embed/${ytJson.items[0].id.videoId}`;
+                                    })                                
+                                } else { this.vidSrc = `https://www.youtube.com/embed/adzYW5DZoWs`; }
                             }
                             //increase the counter
                             propertyCounter++;
@@ -84,9 +100,19 @@ const app = new Vue({
                     }
                 })
             }
-        } // end search
+        }, // end search
+        pullLocal(){
+            if(localStorage.getItem("local-user-query")){
+                let qStr = localStorage.getItem("local-user-query");
+                let q = JSON.parse(qStr);
+                this.resourceType = q.category;
+                this.searchTerm = q.term;
+                this.vidBool = q.vid;
+            }
+        } //end pullLocal
     }, // end methods
     created: function(){
+        this.pullLocal();
         this.search();
     }
 });
