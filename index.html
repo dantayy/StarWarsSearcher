@@ -3,6 +3,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <title>Star Wars Searcher!</title>
         <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
         <link
@@ -11,66 +12,53 @@
           href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"
         />
         <style>
-            /* .myheader grabbed from Bootstrap's jumbotron example - https://getbootstrap.com/docs/4.0/examples/jumbotron/ */
-            .myheader{
-/*                background-color: #e9ecef;*/
-                padding: 4rem 2rem;
-                margin-bottom:2rem;
+/*
+            @font-face {
+              font-family: 'Starjedi';
+              src: url('fonts/Starjedi.ttf')  format('truetype');
             }
-
-            input.form-control{
-                display: inline-block;
-                width: 20rem;
-                margin-right:1rem;
+            h1{
+                font-family: 'Starjedi';
+                color: yellow;
             }
-            .search-row{
-                margin-bottom:1rem;
+*/
+            ul{
+                list-style: none;
             }
-
+            footer{
+                margin: auto;
+            }
+            .row{
+                margin: 1em;
+            }
         </style>
     </head>
     <body class="bg-dark text-white">
-        <div id="app" class="container"><!-- Vue container -->
+        <div id="app" class="container-fluid"><!-- Vue container -->
             <div class="row myheader">
                 <h1 class="display-5">{{title}}</h1>
                 <p class="lead text-muted">Set the category next to the text field, type the name of the character/creature/object you want to look up, and then hit search to get some information on that character! (Entering no text will return a random result from the specified category)</p>
             </div>			
             <div class="row search-row">
-                <div class="col-md-6">
-                    <div class="row">
-                        <select v-model="resourceType">
-                          <option disabled value="">Please select one</option>
-                          <option>films</option>
-                          <option>people</option>
-                          <option>planets</option>
-                          <option>species</option>
-                          <option>starships</option>
-                          <option>vehicles</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <input v-model="searchTerm" placeholder="Search Term">
-                    </div>
-                    <div class="row">
-                        <p><input v-model="vidBool" type="checkbox" name="Video Search Checkbox" checked> Search YouTube for a video about your term?</p>
-                    </div>
-                    <div class="row">
-                        <button class="btn btn-outline-success" type="submit" @click="search">Search</button>
-                    </div>
-                    <div class="row">
-                        <p>Results:</p>
-                    </div>
-                    <div class="row">
-                        <result-display v-bind:response="returnedInfo"></result-display>
-                    </div>
+                <div class="col-sm-6">
+                    <select v-model="resourceType">
+                      <option disabled value="">Please select one</option>
+                      <option>films</option>
+                      <option>people</option>
+                      <option>planets</option>
+                      <option>species</option>
+                      <option>starships</option>
+                      <option>vehicles</option>
+                    </select>
+                    <input v-model="searchTerm" placeholder="Search Term">
+                    <p><input v-model="vidBool" type="checkbox" name="Video Search Checkbox" checked> Search YouTube for a video about your term?</p>
+                    <button class="btn btn-outline-success" type="submit" @click="search">Search</button>
+                    <p>Results:</p>
+                    <result-display v-bind:response="returnedInfo"></result-display>
                 </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <p>Video Result (defaults to Episode IX teaser!): </p>
-                    </div>
-                    <div class="row">
-                        <result-video v-bind:url="vidSrc"></result-video>
-                    </div>
+                <div class="col-sm-6">
+                    <p>Video Result (defaults to Episode IX teaser!): </p>
+                    <result-video v-bind:url="vidSrc"></result-video>
                 </div>
             </div> <!-- end row -->
             <div class="row">

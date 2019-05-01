@@ -1,6 +1,6 @@
 Vue.component('joke-footer-2',{
 	props: ['year','name'],
-	template: `<footer class="muted" style="text-align:center">
+	template: `<footer class="muted">
 		   &copy; {{ year }} {{ name }}
 		   </footer>`
 });
@@ -14,5 +14,7 @@ Vue.component('result-display',{
 });
 Vue.component('result-video',{
     props: ['url'],
-    template: `<iframe width="500em" height="300em" v-bind:src="url" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`
+    template: `<div class="embed-responsive embed-responsive-16by9">
+  <iframe class="embed-responsive-item" v-bind:src="url" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>`
 });
